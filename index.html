@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Artifact Data (Embedded)</title>
+</head>
+<body>
+  <h1>Data from GitHub Artifact</h1>
+  <div id="data-container"></div>
+
+  <script>
+    const artifactName = "your_artifact_name.json"; // Replace with your actual artifact name
+
+    // Function to download artifact (assuming downloaded artifact is placed within the repository)
+    function downloadArtifact() {
+      const downloadUrl = `${window.location.origin}/${window.location.pathname}${artifactName}`;
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = artifactName;
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Function to display data from downloaded artifact
+    function displayData(data) {
+      const container = document.getElementById("data-container");
+      // You can modify this section to format the data as needed
+      container.textContent = JSON.stringify(data, null, 2); // Pretty-printed JSON
+    }
+
+    // Check if artifact file exists before displaying data
+    if (window.location.pathname.endsWith(artifactName)) {
+      // Downloaded artifact is available in the current path, display data directly
+      fetch(artifactName)
+        .then(response => response.json())
+        .then(data => displayData(data))
+        .catch(error => {
+          console.error(error);
+          document.getElementById("data-container").textContent = "Error processing data";
+        });
+    } else {
+      // Artifact not found in the current path, download it
+      downloadArtifact();
+    }
+  </script>
+</body>
+</html>
