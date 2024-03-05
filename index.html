@@ -3,41 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Random Amazon Product</title>
+  <title>Secure PDF Viewer</title>
 </head>
 <body>
-  <h1>Random Amazon Product</h1>
-  <div id="product-container">
-    <img id="product-image" src="" alt="Random Product Image">
-    <p id="product-link"></p>
+  <h1>Secure PDF Viewer</h1>
+
+  <form id="login-form">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required autocomplete="new-password"><br><br>
+    <button type="submit">Login</button>
+  </form>
+
+  <div id="pdf-container" style="display: none;">
+    <object id="pdf-viewer" data="" type="application/pdf" width="100%" height="400"></object>
   </div>
 
-  <button id="show-random-product">Show Random Product</button>
-
   <script>
-    const productContainer = document.getElementById("product-container");
-    const productImage = document.getElementById("product-image");
-    const productLink = document.getElementById("product-link");
-    const button = document.getElementById("show-random-product");
+    const loginForm = document.getElementById("login-form");
+    const pdfContainer = document.getElementById("pdf-container");
+    const pdfViewer = document.getElementById("pdf-viewer");
 
-    const apiKey = "YOUR_THIRD_PARTY_API_KEY"; // Replace with your actual API key
+    loginForm.addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent default form submission
 
-    button.addEventListener("click", function() {
-      fetch(`https://api.example.com/random/amazon-product?key=${apiKey}`)
-        .then(response => response.json())
-        .then(data => {
-          productContainer.style.display = "block";
-          productImage.src = data.imageUrl;
-          productLink.href = data.productUrl;
-          productLink.textContent = "View Product";
-        })
-        .catch(error => {
-          console.error(error);
-          productContainer.style.display = "block";
-          productImage.src = "";
-          productImage.alt = "Error fetching product";
-          productLink.textContent = "An error occurred!";
-        });
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      // **Security Considerations:**
+      // - Never store passwords in plain text. Implement secure hashing on the server-side.
+      // - Validate username and password securely on the server-side (don't validate here in JavaScript).
+
+      // **Example Validation (for demonstration only, replace with server-side validation):**
+      if (username === "sfbg_admin" && password === "sfbgFY24") {
+        // Login successful (replace with actual logic to fetch and display PDF)
+        pdfContainer.style.display = "block";
+        pdfViewer.data = `https://raw.githubusercontent.com/${window.location.origin}/${window.location.pathname.split('/')[1]}/main/your_pdf_document.pdf`; // Replace with actual path
+      } else {
+        alert("Invalid username or password!");
+      }
+
+      // Clear password field after submission (optional)
+      document.getElementById("password").value = "";
     });
   </script>
 </body>
