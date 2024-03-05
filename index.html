@@ -3,104 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitHub Artifact Data (Embedded)</title>
+  <title>Random Amazon Product</title>
 </head>
 <body>
-  <h1>Secure Access Form</h1>
-  <form id="access-form">
-    <label for="url">URL:</label>
-    <input type="text" id="url" name="url" required><br><br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required autocomplete="new-password"><br><br>
-    <button type="submit">Submit</button>
-  </form>
+  <h1>Random Amazon Product</h1>
+  <div id="product-container">
+    <img id="product-image" src="" alt="Random Product Image">
+    <p id="product-link"></p>
+  </div>
+
+  <button id="show-random-product">Show Random Product</button>
 
   <script>
-    const form = document.getElementById("access-form");
+    const productContainer = document.getElementById("product-container");
+    const productImage = document.getElementById("product-image");
+    const productLink = document.getElementById("product-link");
+    const button = document.getElementById("show-random-product");
 
-    form.addEventListener("submit", function(event) {
-      event.preventDefault(); // Prevent default form submission
+    const apiKey = "YOUR_THIRD_PARTY_API_KEY"; // Replace with your actual API key
 
-      // Get form data
-      const url = document.getElementById("url").value;
-      const password = document.getElementById("password").value;
-
-      // Validation (replace with your desired logic)
-      if (url.trim() === "" || password.trim() === "") {
-        alert("Please enter both URL and password!");
-        return;
-      }
-
-      // Choose one of the following approaches for secure data handling:
-
-      // Approach 1: Send data to a server using HTTPS
-      // (Requires server-side implementation and secure communication)
-      // 
-      // const data = { url, password }; // (Don't actually send password)
-      // fetch('/api/submit-data', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data)
-      // })
-      // .then(response => {
-      //   if (response.ok) {
-      //     alert("Data submitted successfully!");
-      //   } else {
-      //     alert("Error submitting data!");
-      //   }
-      // })
-      // .catch(error => {
-      //   console.error(error);
-      //   alert("An error occurred!");
-      // });
-
-      // Approach 2: Store data locally (less secure, for demonstration only)
-      // (Avoid storing passwords in plain text)
-      const data = { url }; // Don't store password locally
-      localStorage.setItem('formData', JSON.stringify(data));
-      alert("Data stored locally (for demonstration only)");
-    });
-  </script>
-  
-  <h1>Data from GitHub Artifact</h1>
-  <div id="data-container"></div>
-
-  <script>
-    const artifactName = "your_artifact_name.json"; // Replace with your actual artifact name
-
-    // Function to download artifact (assuming downloaded artifact is placed within the repository)
-    function downloadArtifact() {
-      const downloadUrl = `${window.location.origin}/${window.location.pathname}${artifactName}`;
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = artifactName;
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    // Function to display data from downloaded artifact
-    function displayData(data) {
-      const container = document.getElementById("data-container");
-      // You can modify this section to format the data as needed
-      container.textContent = JSON.stringify(data, null, 2); // Pretty-printed JSON
-    }
-
-    // Check if artifact file exists before displaying data
-    if (window.location.pathname.endsWith(artifactName)) {
-      // Downloaded artifact is available in the current path, display data directly
-      fetch(artifactName)
+    button.addEventListener("click", function() {
+      fetch(`https://api.example.com/random/amazon-product?key=${apiKey}`)
         .then(response => response.json())
-        .then(data => displayData(data))
+        .then(data => {
+          productContainer.style.display = "block";
+          productImage.src = data.imageUrl;
+          productLink.href = data.productUrl;
+          productLink.textContent = "View Product";
+        })
         .catch(error => {
           console.error(error);
-          document.getElementById("data-container").textContent = "Error processing data";
+          productContainer.style.display = "block";
+          productImage.src = "";
+          productImage.alt = "Error fetching product";
+          productLink.textContent = "An error occurred!";
         });
-    } else {
-      // Artifact not found in the current path, download it
-      downloadArtifact();
-    }
+    });
   </script>
 </body>
 </html>
